@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TouchableOpacity } from "react-native";
@@ -26,7 +26,7 @@ export default function AppLayout() {
       screenOptions={({ route }) => ({
         headerRight: () => (
           <TouchableOpacity 
-            onPress={() => console.log('Notificações')}
+            onPress={() => router.push('/telas/(app)/notificacoes')}
             style={{ marginRight: 16 }}
           >
             <Ionicons name="notifications-outline" size={30} color="#000000" />
@@ -61,7 +61,7 @@ export default function AppLayout() {
             fontWeight: 'bold',
             color: '#000000', }
        }} />
-      <Tabs.Screen name="config" options={{ title: "Configurações" }} />
+      <Tabs.Screen name="configuracoes" options={{ title: "Configurações" }} />
       <Tabs.Screen 
     name="notificacoes" 
     options={{ 

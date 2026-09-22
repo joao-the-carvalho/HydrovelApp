@@ -14,7 +14,7 @@ export default function HomeScreen() {
     if (Platform.OS === 'ios' || Platform.OS === 'web') {
       return 'http://localhost:3000'; 
     } else {
-      return 'http://192.168.0.14:3000'; 
+      return 'https://ideally-debtless-tiring.ngrok-free.dev'; 
     }
   };
 

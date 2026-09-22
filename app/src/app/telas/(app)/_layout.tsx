@@ -42,7 +42,7 @@ export default function AppLayout() {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'analise') {
             iconName = focused ? 'analytics' : 'analytics-outline'  ;
-          } else if (route.name === 'config') {
+          } else if (route.name === 'configuracoes') {
             iconName = focused ? 'settings' : 'settings-outline';
           }
 
@@ -50,17 +50,17 @@ export default function AppLayout() {
         },
       })}
     >
-      <Tabs.Screen name="index" options={{ title: "Início", headerTitle: `Olá, ${userName}`,
-          headerTitleStyle: {
-            fontSize: 24,
-            fontWeight: 'bold',
-            color: '#000000', }}} />
       <Tabs.Screen name="analise" options={{ title: "Análise", 
         headerTitleStyle: {
             fontSize: 24,
             fontWeight: 'bold',
             color: '#000000', }
        }} />
+      <Tabs.Screen name="index" options={{ title: "Início", headerTitle: `Olá, ${userName}`,
+          headerTitleStyle: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: '#000000', }}} />
       <Tabs.Screen name="configuracoes" options={{ title: "Configurações" }} />
       <Tabs.Screen 
     name="notificacoes" 

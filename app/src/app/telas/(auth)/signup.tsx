@@ -15,7 +15,7 @@ export default function SignupScreen() {
     if (Platform.OS === 'ios' || Platform.OS === 'web') {
       return 'http://localhost:3000'; 
     } else {
-      return 'https://wild-rice-retire.loca.lt/'; 
+      return 'https://ideally-debtless-tiring.ngrok-free.dev'; 
     }
   };
 

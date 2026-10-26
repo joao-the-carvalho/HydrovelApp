@@ -1,5 +1,18 @@
 import React, { useState } from "react";
-import { Image, Pressable, Text, ActivityIndicator, Alert, TextInput, Platform } from "react-native";
+import {
+  Image,
+  Pressable,
+  Text,
+  ActivityIndicator,
+  Alert,
+  TextInput,
+  Platform,
+  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  StyleSheet,
+  
+} from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import layout from "../../../styles/styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,9 +26,9 @@ export default function SignupScreen() {
 
   const getBaseUrl = () => {
     if (Platform.OS === 'ios' || Platform.OS === 'web') {
-      return 'http://localhost:3000'; 
+      return 'http://localhost:3000';
     } else {
-      return 'https://ideally-debtless-tiring.ngrok-free.dev'; 
+      return 'https://ideally-debtless-tiring.ngrok-free.dev';
     }
   };
 
@@ -24,6 +37,7 @@ export default function SignupScreen() {
       Alert.alert("Erro", "Por favor, preencha todos os campos.");
       return;
     }
+
     setLoading(true);
     try {
       const response = await fetch(`${getBaseUrl()}/signup`, {
@@ -39,7 +53,6 @@ export default function SignupScreen() {
           await AsyncStorage.setItem('@session_token', data.token);
         }
         await AsyncStorage.setItem('@user_name', nome);
-
         Alert.alert("Sucesso", "Conta criada e login efetuado!");
         router.replace('/telas/(app)');
       } else {
@@ -55,51 +68,194 @@ export default function SignupScreen() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={layout.container}>
-        <SafeAreaView style={layout.center}>
-          <Image
-            source={require("../../assets/image.png")}
-            style={layout.imageLocal}
-            resizeMode="contain"
-          />
-          <Text style={layout.textMain}>Registro</Text>
-          <TextInput
-            style={layout.input}
-            onChangeText={onChangeNome}
-            value={nome}
-            placeholder="Nome"
-          />
-          <TextInput
-            style={layout.input}
-            onChangeText={onChangeEmail}
-            value={email}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            placeholder="E-mail"
-          />
-          <TextInput
-            style={layout.input}
-            onChangeText={onChangePassword}
-            value={password}
-            secureTextEntry
-            placeholder="Senha"
-          />
-          <Pressable 
-            style={layout.button}
-            onPress={handleSignup}
-            disabled={loading}
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+        >
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
-            {loading ? <ActivityIndicator color="#000" /> : <Text>Registrar</Text>}
-          </Pressable>
-          <Text style={{ marginTop: 15 }}>Já tem uma conta?</Text>
-          <Pressable 
-            style={layout.button}
-            onPress={() => router.replace('/telas/(auth)/login')}
-          >
-            <Text>Faça login!</Text>
-          </Pressable>
-        </SafeAreaView>
+            {/* Área da Logo */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../../assets/image.png")}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+              <Text style={styles.title}>Criar conta</Text>
+              <Text style={styles.subtitle}>Preencha seus dados para começar</Text>
+            </View>
+
+            {/* Formulário */}
+            <View style={styles.formContainer}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.inputLabel}>Nome completo</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChangeNome}
+                  value={nome}
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  placeholder="Seu nome"
+                  placeholderTextColor="#999"
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <Text style={styles.inputLabel}>E-mail</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChangeEmail}
+                  value={email}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  placeholder="seu@email.com"
+                  placeholderTextColor="#999"
+                />
+              </View>
+
+              <View style={styles.inputWrapper}>
+                <Text style={styles.inputLabel}>Senha</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChangePassword}
+                  value={password}
+                  secureTextEntry
+                  autoComplete="password-new"
+                  placeholder="Mínimo 6 caracteres"
+                  placeholderTextColor="#999"
+                />
+              </View>
+
+              <Pressable
+                style={[styles.button, styles.buttonPrimary]}
+                onPress={handleSignup}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#FFF" />
+                ) : (
+                  <Text style={styles.buttonTextPrimary}>Criar conta</Text>
+                )}
+              </Pressable>
+
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>ou</Text>
+                <View style={styles.divider} />
+              </View>
+
+              <Pressable
+                style={[layout.button, styles.buttonSecondary]}
+                onPress={() => router.replace('/telas/(auth)/login')}
+              >
+                <Text style={styles.buttonTextSecondary}>
+                  Já tenho uma conta
+                </Text>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F7FA',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+  },
+  formContainer: {
+    width: '100%',
+  },
+  inputWrapper: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#333',
+  },
+  button: {
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  buttonPrimary: {
+    backgroundColor: '#1E88E5',
+  },
+  buttonSecondary: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#1E88E5',
+  },
+  buttonTextPrimary: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  buttonTextSecondary: {
+    color: '#1E88E5',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    marginHorizontal: 15,
+    color: '#999',
+    fontSize: 14,
+  },
+});

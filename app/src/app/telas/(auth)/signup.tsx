@@ -47,14 +47,23 @@ export default function SignupScreen() {
       });
 
       const data = await response.json();
+      console.log(JSON.parse(JSON.stringify(data)));
 
       if (response.ok) {
         if (data.token) {
           await AsyncStorage.setItem('@session_token', data.token);
         }
-        await AsyncStorage.setItem('@user_name', nome);
+        const nomeUsuario = data.user?.nome || data.nome || 'Usuário';
+        const emailUsuario = data.user?.email || data.email || email.trim().toLowerCase();
+        await AsyncStorage.setItem('@user_name', nomeUsuario);
+        await AsyncStorage.setItem('@user_email', emailUsuario);
         Alert.alert("Sucesso", "Conta criada e login efetuado!");
-        router.replace('/telas/(app)');
+        const jaConfigurado = await AsyncStorage.getItem('@configured');
+        if (jaConfigurado === 'true') {
+          router.replace('/telas/(app)');
+        } else {
+          router.replace('/telas/configinicial');
+        }
       } else {
         Alert.alert("Erro", data.message || "Erro ao criar conta.");
       }

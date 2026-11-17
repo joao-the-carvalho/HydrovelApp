@@ -48,22 +48,34 @@ export default function LoginScreen() {
       });
 
       const data = await response.json();
+      console.log(JSON.parse(JSON.stringify(data)));
 
       if (response.ok) {
         await AsyncStorage.setItem('@session_token', data.token);
         const nomeUsuario = data.user?.nome || data.nome || 'Usuário';
+        const emailUsuario = data.user?.email || data.email || email.trim().toLowerCase();
         await AsyncStorage.setItem('@user_name', nomeUsuario);
+        await AsyncStorage.setItem('@user_email', emailUsuario);
         Alert.alert("Sucesso", "Login realizado com sucesso!");
-        router.replace('/telas/(app)');
-      } else {
-        Alert.alert("Erro", data.message || "E-mail ou senha inválidos.");
+        
+        const jaConfigurado = await AsyncStorage.getItem('@configured');
+        if (jaConfigurado === 'true') {
+          router.replace('/telas/(app)');
+        } else {
+          router.replace('/telas/configinicial'); // onboarding de chave
+        }
+        } 
+        else {
+          Alert.alert("Erro", data.message || "E-mail ou senha inválidos.");
+        }
+      } 
+      catch (error) {
+        Alert.alert("Erro de conexão", "Não foi possível conectar ao servidor.");
+        console.error("Erro no login:", error);
+      } 
+      finally {
+        setLoading(false);
       }
-    } catch (error) {
-      Alert.alert("Erro de conexão", "Não foi possível conectar ao servidor.");
-      console.error("Erro no login:", error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
